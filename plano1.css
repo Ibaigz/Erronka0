@@ -154,3 +154,17 @@ p {
     background-color: rgb(255, 0, 0);
     border-radius: 2px;
 }
+
+.logTitle{
+    
+    width: 100%;
+    padding: 10px;
+    padding-bottom: 25px;
+}
+.logText{
+    
+    background-color: black;
+    color: green;
+    width: 50%;
+    padding: 10px;
+}
