@@ -1,10 +1,6 @@
 <?php
 session_start();
 
-if (isset($_SESSION['uname'])) {
-	header("Location: index.php");
-}
-
 function getConnection() { //Revisar a futuro
     $servername = "localhost";
     $username = "root";
@@ -33,7 +29,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Preparar y ejecutar consulta preparada
-        $sql = "SELECT * FROM users WHERE username = :uname AND password = :pass"; //Revisar nombre tabla
+        $sql = "SELECT * FROM users WHERE nombre = :uname AND password = :pass"; //Revisar nombre tabla
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':uname', $uname);
 		$stmt->bindParam(':pass', $pass);
@@ -42,6 +38,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         // Si se encuentra un usuario, verificar la contraseña
         if ($stmt->rowCount() == 1) {
 			$_SESSION['uname'] = $uname;
+			$_SESSION['userID'] = $stmt->fetch()['usuarioID'];
 			header("Location: index.php");
 		} else {
 			echo "<script>alert('Erabiltzailea ez da existitzen')</script>";
