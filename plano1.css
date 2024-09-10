@@ -3,6 +3,9 @@ body {
     margin: 0;
 
     padding: 0;
+    background-image: url("./media/fondo.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 
 }
 
@@ -34,8 +37,7 @@ header {
 
 #section2 {
     flex: 0 0 30%;
-    background: rgb(0, 205, 226);
-    background: linear-gradient(129deg, rgba(0, 205, 226, 1) 0%, rgba(156, 122, 209, 0.9969364454766282) 76%);
+    background: rgb(0,167,226);background: linear-gradient(139deg, rgba(0,167,226,1) 0%, rgba(0,66,166,0.9969364454766282) 64%);
     color: white;
     text-align: center;
     padding-bottom: 20px;
