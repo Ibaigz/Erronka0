@@ -17,6 +17,22 @@ $stmt = $con->prepare($sql);
 $stmt->execute();
 $log = $stmt->fetchAll();
 
+//Hacer el log más legible
+foreach ($log as $key => $logs) {
+	$sql = "SELECT nombre FROM users WHERE usuarioID = :uid";
+	$stmt = $con->prepare($sql);
+	$stmt->bindParam(':uid', $logs['usuarioID']);
+	$stmt->execute();
+	$uname = $stmt->fetch();
+	$log[$key]['usuarioID'] = $uname['nombre'];
+	$sql2 = "SELECT tipo, piso FROM dispositivo WHERE dispositivoID = :dispositivoID";
+	$stmt2 = $con->prepare($sql2);
+	$stmt2->bindParam(':dispositivoID', $logs['dispositivoID']);
+	$stmt2->execute();
+	$dispositivo = $stmt2->fetch();
+	$log[$key]['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+}
+
 
 // POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -69,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<?php endforeach; ?>
 		<p>Últimas 10 acciones:</p>
 		<?php foreach ($log as $logs) : ?>
-			<p><?php echo $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
+			<p><?php echo "[" . $logs['timestmp'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
 		<?php endforeach; ?>
 	</body>
 </html>
