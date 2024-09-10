@@ -34,7 +34,6 @@
                 LUCES
                 <img id="bombilla" src="./media/bombilla.png" alt="" />
               </div>
-              <div id="myAlarma" class="fondoBoton">ALARMA</div>
               <div class="fondoBoton">LUCES</div>
               <div class="fondoBoton">LUCES</div>
               <div class="fondoBoton">LUCES</div>
@@ -43,9 +42,13 @@
               <div class="fondoBoton">LUCES</div>
               <div class="fondoBoton">LUCES</div>
               <div class="fondoBoton">LUCES</div>
+              <div onclick="textoEscrito()" id="myAlarma" class="fondoBoton">ALARMA</div>
             </div>
           </section>
           <div id="alarmBlock"></div>
+
+          <div id="emergencia"></div>
+          <button onclick="cerrar()" id="x">X</button>
         </div>
     </main>
     <script>
@@ -63,10 +66,20 @@
         });
       let alarma = document.getElementById("alarmBlock");
       let alarmActive = false;
-      document
-        .getElementById("myAlarma")
-        .addEventListener("click", function () {
+      let emergencia = document.getElementById("emergencia");
+      let x = document.getElementById("x");
+
+      document.getElementById("myAlarma").addEventListener("click", function () {
           alarma.classList.toggle("changedAlarma");
+          
+          if (emergencia.style.display === "block") {
+            emergencia.style.display = "none";
+          } else {
+            emergencia.style.display = "block";
+          }
+          
+          x.style.display = "block";
+          
           if (!alarmActive) {
             alarma.style.display = "block";
             alarma.classList.add("fading");
@@ -75,13 +88,41 @@
               alarma.classList.remove("fading"); // Detiene la animación
               alarma.style.display = "none"; // Oculta el div
               alarmActive = false;
-          }, 5000);
+          }, 25000);
           } else {
             alarma.style.display = "none";
             alarma.classList.remove("fading");
             alarmActive = false;
           }
         });
+      function cerrar() {
+        emergencia.style.display = "none";
+        x.style.display = "none";
+        setTimeout(() => {
+        location.reload();
+        }, 1000);
+      }
+
+      function textoEscrito() {
+    const div = document.getElementById("emergencia");
+    let texto = "LLamando a los servicios de emergencia                <br><br>Reiniciando sistema de seguridad...                      <br><br>Aspersores en marcha                  <br><br>Apagando calefaccion...                  <br><br>Reiniciando routers...           <br><br>Guardando y descargando datos...";
+
+    function efectoTextTyping(elemento, texto, i = 0) {
+        if (texto.substring(i, i + 4) === "<br>") {
+            elemento.innerHTML += "<br>";
+            i += 4;
+        } else {
+            elemento.innerHTML += texto[i];
+            i++;
+        }
+
+        if (i >= texto.length) return;
+
+        setTimeout(() => efectoTextTyping(elemento, texto, i), 100);
+    }
+
+    efectoTextTyping(div, texto);
+}
     </script>
   </body>
 </html>

@@ -126,8 +126,31 @@ p {
 
 }
 
-
+#myAlarma{
+    background-color: rgba(255, 0, 0, 0.764);
+}
 
 .plano {
     width: 80%;
+}
+
+#emergencia{
+    position:absolute;
+    top: 23%;
+    left: 35%;
+    background-color: rgb(255, 0, 0);
+    padding: 5%;
+    display: none;
+    color: white;
+    border-radius: 7px;
+}
+
+#x{
+    position: absolute;
+    top: 25%;
+    left: 64%;
+    color: black;
+    display: none;
+    background-color: rgb(255, 0, 0);
+    border-radius: 2px;
 }
