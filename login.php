@@ -1,22 +1,7 @@
 <?php
 session_start();
 
-function getConnection() { //Revisar a futuro
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "erronka0";
-    $conn = null;
-
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $conn->exec("SET NAMES 'utf8'");
-        return $conn;
-    } catch(PDOException $e) {
-        echo "Errorea: " . $e->getMessage();
-    }
-}
+require_once 'connection/getConnection.php';
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['login'])) {
