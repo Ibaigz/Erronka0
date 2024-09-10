@@ -24,7 +24,7 @@ header {
     display: flex;
     margin-left: 10px;
     margin-right: 10px;
-
+    position: relative;
 }
 
 #section1 {
@@ -38,7 +38,8 @@ header {
     background: linear-gradient(129deg, rgba(0, 205, 226, 1) 0%, rgba(156, 122, 209, 0.9969364454766282) 76%);
     color: white;
     text-align: center;
-
+    padding-bottom: 20px;
+    ;
 }
 
 #section2,
@@ -81,15 +82,51 @@ p {
     border-radius: 7px;
     margin: 0 auto;
 }
+
 .changed {
-    background-color: lightcoral;
+    background-color: rgb(238, 238, 101);
+}
+
+/* .changedAlarma {
+    background-color: rgb(224, 84, 84);
+    z-index: 2;
+
+    position: relative;
+    text-align: center;
+
+} */
+
+.changedAlarma {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.5); /* Fondo semi-transparente para la alarma */
+    display: none; /* Inicialmente oculto */
+    z-index: 10; /* Asegura que esté sobre el container */
+}
+
+@keyframes fade {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.fading {
+    animation: fade 2s infinite; /* Animación de fade in - fade out */
+}
+
+#planoOn {
+    display: none;
 }
 
 #bombilla {
     width: 40px;
 
-
 }
+
+
 
 .plano {
     width: 80%;
