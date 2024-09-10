@@ -1,8 +1,6 @@
 <?php
-
-ob_start();
-require_once 'login.php';
-ob_end_clean();
+session_start();
+require_once 'dbcreate.php';
 
 $con = getConnection();
 
@@ -59,6 +57,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		header("Location: index.php");
 		exit();
 	}
+	else if (isset($_POST['Download'])) {
+		$sql = "SELECT * FROM acciones";
+		$stmt = $con->prepare($sql);
+		$stmt->execute();
+		$logs = $stmt->fetchAll();
+		$filename = "logs.csv";
+		$fp = fopen('php://output', 'w');
+		header('Content-type: application/csv');
+		header('Content-Disposition: attachment; filename=' . $filename);
+		foreach ($logs as $log) {
+			$sql = "SELECT nombre FROM users WHERE usuarioID = :uid";
+			$stmt = $con->prepare($sql);
+			$stmt->bindParam(':uid', $log['usuarioID']);
+			$stmt->execute();
+			$uname = $stmt->fetch();
+			$sql2 = "SELECT tipo, piso FROM dispositivo WHERE dispositivoID = :dispositivoID";
+			$stmt2 = $con->prepare($sql2);
+			$stmt2->bindParam(':dispositivoID', $log['dispositivoID']);
+			$stmt2->execute();
+			$dispositivo = $stmt2->fetch();
+			$log['usuarioID'] = $uname['nombre'];
+			$log['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+			fputcsv($fp, $log);
+		}
+		fclose($fp);
+		exit();
+	}
 }
 ?>
 
@@ -85,7 +110,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<?php endforeach; ?>
 		<p>Últimas 10 acciones:</p>
 		<?php foreach ($log as $logs) : ?>
-			<p><?php echo "[" . $logs['timestmp'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
+			<p><?php echo "[" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
 		<?php endforeach; ?>
+		<form method="post" action="index.php">
+			<input type="submit" name="Download" value="Download">
+		</form>
 	</body>
 </html>
