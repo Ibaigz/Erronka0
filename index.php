@@ -6,11 +6,19 @@ ob_end_clean();
 
 $con = getConnection();
 
+// Seleccionar todos los dispositivos
 $sql = "SELECT * FROM dispositivo";
 $stmt = $con->prepare($sql);
 $stmt->execute();
 $todos = $stmt->fetchAll();
+// Seleccionar las últimas 10 acciones
+$sql = "SELECT * FROM acciones ORDER BY actionID DESC LIMIT 10";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+$log = $stmt->fetchAll();
 
+
+// POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if (isset($_POST['toggle'])) {
 		$dispositivoID = $_POST['id'];
@@ -46,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	</head>
 	<body>
 		<h1>Erronka 0 - Index</h1>
-		<?php echo "Kaixo"; ?>
+		<p>Dispositivos:</p>
 		<?php foreach ($todos as $dispositivo) : ?>
 			<p><?php echo $dispositivo['tipo'] . " piso: " . $dispositivo['piso'] . " - Estado: " . $dispositivo['estado']; ?></p>
 			<?php if (isset($_SESSION['uname'])) : ?>
@@ -58,6 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<input type="submit" name="toggle" value="Toggle">
 				</form>
 			<?php endif; ?>
+		<?php endforeach; ?>
+		<p>Últimas 10 acciones:</p>
+		<?php foreach ($log as $logs) : ?>
+			<p><?php echo $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
 		<?php endforeach; ?>
 	</body>
 </html>
