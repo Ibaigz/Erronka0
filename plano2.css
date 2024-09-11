@@ -199,17 +199,26 @@ p {
 }
 
 .logTitle{
+    padding-top: 1000px;
+    background-color: rgba(255, 255, 255, 0.67);
+    width: 55%;
+    padding: 7px;
+    padding-left: 2%;
+    height: 25%;
+    border-radius: 7px;
+    margin-left: 200px;
+    box-shadow:-5px -5px 5px rgba(255, 255, 255, 0.1),5px 5px 5px rgba(0, 0, 0, 0.1);
+        
+
     
-    width: 100%;
-    padding: 10px;
-    padding-bottom: 25px;
+    
 }
 .logText{
-    
+    border-radius: 7px;
     background-color: black;
     color: green;
-    width: 50%;
-    padding: 10px;
+    width: 90%;
+    padding: 15px;
 }
 
 .changed{
@@ -235,4 +244,21 @@ p {
 }
 .apagada {
     color: white; /* Color estático para apagada */
+}
+
+#s2 {
+    flex: 0 0 30%;
+    background: rgb(0,167,226);background: linear-gradient(139deg, rgba(0,167,226,1) 0%, rgba(0,66,166,0.9969364454766282) 64%);
+    color: white;
+    text-align: center;
+    padding-bottom: 20px;
+    ;
+}
+
+#s2,
+p {
+    font-weight: 300;
+    font-size: x-large;
+
+    padding-top: 20px;
 }

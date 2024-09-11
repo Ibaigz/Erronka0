@@ -38,7 +38,7 @@ $log = $stmt->fetchAll();
     </header>
     <main>
         <div class="container">
-            <section id="section1">
+        <section id="section1">
                 <img id="plano2Off" class="plano" src="./media/Plano2_Off.jpg" alt="">
 
                 <img id="plano2On" class="plano" src="./media/Plano2_On.jpg" alt="">
@@ -54,7 +54,7 @@ $log = $stmt->fetchAll();
             </div>
         </section>
 
-            <section id="section2">
+            <section id="s2">
                 <div class="fondoP">
                     <h1>Panel de control</h1>
                 </div>
