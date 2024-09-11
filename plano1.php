@@ -1,3 +1,11 @@
+<?php
+include "./connection/getConnection.php";
+include "dbcreate.php";
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -28,14 +36,9 @@
               Historial de Logs
               
               <div class="logText">
-                > 12:00 - Se ha detectado un incendio en la cocina <br />
-                > 12:05 - Se ha activado la alarma de incendios <br />
-                > 12:10 - Se ha activado el sistema de aspersores <br />
-                > 12:15 - Se ha apagado el incendio <br />
-                > 12:20 - Se ha desactivado la alarma de incendios <br />
-                > 12:25 - Se ha desactivado el sistema de aspersores <br />
-                > 12:30 - Se ha detectado un incendio en la cocina <br />
-                > 12:35 - Se ha activado la alarma de incendios <br />
+              <?php foreach ($log as $logs) : ?>
+                <p><?php echo "[" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
+              <?php endforeach; ?>
                 
               </div>
             </div>
