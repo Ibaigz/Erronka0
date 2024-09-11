@@ -100,7 +100,9 @@ function insertAcciones() {
 		(2, 3, 'apagar'),
 		(2, 4, 'apagar'),
 		(3, 5, 'encender'),
-		(3, 6, 'encender')";
+		(3, 6, 'encender'),
+		(1, 5, 'apagar'),
+		(2, 6, 'apagar')";
 	$conn->exec($sql);
 	$conn = null;
 }
