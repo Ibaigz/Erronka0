@@ -17,6 +17,22 @@ $stmt = $con->prepare($sql);
 $stmt->execute();
 $log = $stmt->fetchAll();
 
+//Hacer el log más legible
+foreach ($log as $key => $logs) {
+	$sql = "SELECT nombre FROM users WHERE usuarioID = :uid";
+	$stmt = $con->prepare($sql);
+	$stmt->bindParam(':uid', $logs['usuarioID']);
+	$stmt->execute();
+	$uname = $stmt->fetch();
+	$log[$key]['usuarioID'] = $uname['nombre'];
+	$sql2 = "SELECT tipo, piso FROM dispositivo WHERE dispositivoID = :dispositivoID";
+	$stmt2 = $con->prepare($sql2);
+	$stmt2->bindParam(':dispositivoID', $logs['dispositivoID']);
+	$stmt2->execute();
+	$dispositivo = $stmt2->fetch();
+	$log[$key]['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+}
+
 ?>
 
 
@@ -37,16 +53,19 @@ $log = $stmt->fetchAll();
 
     <div class="container">
       <section id="section1">
+
         <img
-          id="planoOff"
+          id="<?php echo $todos[0]['estado'] == 0 ? "planoOff" : "planoOn" ?>"
           class="plano"
           src="./media/Plano1_Off.jpg"
           alt="" />
         <img
-          id="planoOn"
+          id="<?php echo $todos[0]['estado'] == 0 ? "planoOn" : "planoOff" ?>"
           class="plano"
           src="./media/Plano1_On.jpg"
           alt="" />
+
+
         <div class="logTitle">
           Historial de Logs
 
@@ -66,7 +85,7 @@ $log = $stmt->fetchAll();
         </div>
         <form action="">
           <div class="botones">
-            <div id="myBombilla" class="fondoBoton">
+            <div id="myBombilla" class="fondoBoton <?php echo $todos[0]['estado'] == 0 ? '' : 'changed'  ?>">
               LUCES
               <img id="bombilla" src="./media/bombilla.png" alt="" />
             </div>
@@ -96,41 +115,40 @@ $log = $stmt->fetchAll();
     let bombillaClicked = false;
     let miDato;
     document.getElementById("myBombilla").addEventListener("click", function() {
-      this.classList.toggle("changed");
-      bombillaClicked = true;
+      // BotonEncendido();
+
+
+      // function BotonEncendido() {
+        this.classList.toggle("changed");
+
+      // }
       planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
       planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
+      let miDato = new URLSearchParams();
+      bombillaClicked = <?php echo $todos[0]['estado'] == 0 ? "false" : "true"; ?>;
 
-      
-      if (bombillaClicked) {
-        miDato = {
-          valor: "encendido",
-          dispositivoID: 1,
-          uid: <?php echo $_SESSION['userID']; ?>
-        };
-      } else {
-        miDato = {
-          valor: "apagado",
-          dispositivoID: 1,
-          uid: <?php echo $_SESSION['userID']; ?>
-        };
-      }
+
+
+      miDato.append("valor", bombillaClicked ? "apagado" : "encendido");
+      miDato.append("dispositivoID", 1);
+      miDato.append("uid", <?php echo $_SESSION['userID']; ?>);
+
+
       fetch('procesar.php', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded' // Enviar como form
           },
-          body: JSON.stringify(miDato)
+          body: miDato.toString() // Enviar la cadena como form-urlencoded
         })
-        .then(response => response.json()) // Cambiado para interpretar la respuesta como JSON
+        .then(response => response.text()) // Interpretar la respuesta como texto
         .then(data => {
           console.log('Respuesta del servidor:', data);
         })
         .catch(error => {
           console.error('Error:', error);
         });
-
     });
     let alarma = document.getElementById("alarmBlock");
     let alarmActive = false;
