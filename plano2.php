@@ -1,3 +1,25 @@
+<?php
+include "./connection/getConnection.php";
+include "dbcreate.php";
+session_start();
+require_once 'dbcreate.php';
+
+$con = getConnection();
+
+// Seleccionar todos los dispositivos
+$sql = "SELECT * FROM dispositivo";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+$todos = $stmt->fetchAll();
+// Seleccionar las últimas 10 acciones
+$sql = "SELECT * FROM acciones ORDER BY actionID DESC LIMIT 10";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+$log = $stmt->fetchAll();
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,21 +42,17 @@
                 <img id="plano2Off" class="plano" src="./media/Plano2_Off.jpg" alt="">
 
                 <img id="plano2On" class="plano" src="./media/Plano2_On.jpg" alt="">
-                <div class="logTitle">
-                    Historial de Logs
-
-                    <div class="logText">
-                        > 12:00 - Se ha detectado un incendio en la cocina <br />
-                        > 12:05 - Se ha activado la alarma de incendios <br />
-                        > 12:10 - Se ha activado el sistema de aspersores <br />
-                        > 12:15 - Se ha apagado el incendio <br />
-                        > 12:20 - Se ha desactivado la alarma de incendios <br />
-                        > 12:25 - Se ha desactivado el sistema de aspersores <br />
-                        > 12:30 - Se ha detectado un incendio en la cocina <br />
-                        > 12:35 - Se ha activado la alarma de incendios <br />
-                    </div>
-                </div>
-            </section>
+                
+            <div class="logTitle">
+              Historial de Logs
+              
+              <div class="logText">
+              <?php foreach ($log as $logs) : ?>
+                <p><?php echo "[" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
+              <?php endforeach; ?>
+                
+            </div>
+        </section>
 
             <section id="section2">
                 <div class="fondoP">
@@ -45,21 +63,22 @@
                         LUCES
                         <img id="bombilla" src="./media/bombilla.png" alt="">
                     </div>
-                    <div onclick="toggleAlarma() & textoEscrito()"  id="myAlarma" class="fondoBoton">
+                    <div onclick="toggleAlarma() & textoEscrito () "  id="myAlarma" class="fondoBoton">
                         ALARMA
-                        <div id="estadoAlarma">Apagada</div>
+                        <div id="estadoAlarma" class="apagada">Apagada</div>
                     </div>
                     <div id="myRouter" class="fondoBoton1">
                         ROUTER
                         <img id="router" src="./media/router.png" alt="">
                     </div>
-                    <div id="myCalefaccion" class="fondoBoton1" onclick="mostrarAlerta() & toggleCalefaccion()">
+                    <div id="myCalefaccion" class="fondoBoton1" onclick="mostrarAlerta()">
                         CALEFAC.
                         <img id="temperatura" src="./media/temperatura.png" alt="">
-                        <div id="estadoCalefac">Apagada</div>
                     </div>
-                    <div class="fondoBoton">
-                        LUCES
+                    <div id="myCambio" onclick="window.location.href='plano1.php'" class="fondoCambio" >
+                        CAMBIAR <br>
+                        PISO
+                        <img id="cambio" src="./media/cambio.png" alt="">
                     </div>
                     <div class="fondoBoton">
                         LUCES
@@ -85,6 +104,7 @@
             this.classList.toggle("encendido");
         });
     </script>
+
 
     <script>
         document.getElementById('myRouter').addEventListener('click', function () {
@@ -196,9 +216,13 @@
                 const estadoAlarma = document.getElementById('estadoAlarma');
                 if (alarmaEncendida) {
                     estadoAlarma.textContent = 'Encendida';
+                    estadoAlarma.classList.remove = 'apagada';
+                    estadoAlarma.classList.add = 'encendida';
                     // Puedes añadir aquí cualquier lógica adicional para cuando la alarma esté encendida
                 } else {
                     estadoAlarma.textContent = 'Apagada';
+                    estadoAlarma.classList.remove = 'encendida';
+                    estadoAlarma.classList.add = 'apagada';
                     // Puedes añadir aquí cualquier lógica adicional para cuando la alarma esté apagada
                 }
             }
@@ -211,10 +235,10 @@
                 const estadoCalefac = document.getElementById('estadoCalefac');
                 if (calefaccionEncendida) {
                     estadoCalefac.textContent = 'Encendida';
-                    // Puedes añadir aquí cualquier lógica adicional para cuando la Calefaccion esté encendida
+
                 } else {
                     estadoCalefac.textContent = 'Apagada';
-                    // Puedes añadir aquí cualquier lógica adicional para cuando la Calefaccion esté apagada
+
                 }
             }
         </script>
