@@ -115,41 +115,50 @@ foreach ($log as $key => $logs) {
     let bombillaClicked = false;
     let miDato;
     document.getElementById("myBombilla").addEventListener("click", function() {
-      // BotonEncendido();
+    // Cambiar el estado del botón de luz
+    this.classList.toggle("changed");
 
+    // Actualizar la visibilidad de las imágenes
+    planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
+    planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
-      // function BotonEncendido() {
-        this.classList.toggle("changed");
+    // Crear el nuevo mensaje de log
+    const now = new Date().toLocaleString();
+    const nombre = <?php echo json_encode($_SESSION['uname']); ?>;
+    const action = <?php echo json_encode($todos[0]['estado'] == 0 ? 'Encendido' : 'Apagado'); ?>;
+    const logText = `> [${now}] ${nombre} ${action}.<br>`;
 
-      // }
-      planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
-      planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
+    // Insertar el nuevo log en la parte superior del contenedor
+    const logDiv = document.querySelector(".logText");
+    logDiv.insertAdjacentHTML('afterbegin', logText); // Añadir el nuevo log al principio
 
-      let miDato = new URLSearchParams();
-      bombillaClicked = <?php echo $todos[0]['estado'] == 0 ? "false" : "true"; ?>;
+    // Limitar a 10 logs
+    const logs = logDiv.children;
+    if (logs.length > 10) {
+        logDiv.removeChild(logs[logs.length - 1]); // Eliminar el log más antiguo
+    }
 
+    // Enviar datos al servidor
+    let miDato = new URLSearchParams();
+    miDato.append("valor", action);
+    miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+    miDato.append("uid", userID);
 
-
-      miDato.append("valor", bombillaClicked ? "apagado" : "encendido");
-      miDato.append("dispositivoID", 1);
-      miDato.append("uid", <?php echo $_SESSION['userID']; ?>);
-
-
-      fetch('procesar.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded' // Enviar como form
-          },
-          body: miDato.toString() // Enviar la cadena como form-urlencoded
-        })
-        .then(response => response.text()) // Interpretar la respuesta como texto
-        .then(data => {
-          console.log('Respuesta del servidor:', data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+    fetch('procesar.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: miDato.toString()
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
+});
     let alarma = document.getElementById("alarmBlock");
     let alarmActive = false;
     let emergencia = document.getElementById("emergencia");
