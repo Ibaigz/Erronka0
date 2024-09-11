@@ -67,19 +67,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		header('Content-type: application/csv');
 		header('Content-Disposition: attachment; filename=' . $filename);
 		foreach ($logs as $log) {
+			//Buscar todos los nombres para añadirlos al log
 			$sql = "SELECT nombre FROM users WHERE usuarioID = :uid";
 			$stmt = $con->prepare($sql);
 			$stmt->bindParam(':uid', $log['usuarioID']);
 			$stmt->execute();
 			$uname = $stmt->fetch();
+			//Buscar info de los dispositivos
 			$sql2 = "SELECT tipo, piso FROM dispositivo WHERE dispositivoID = :dispositivoID";
 			$stmt2 = $con->prepare($sql2);
 			$stmt2->bindParam(':dispositivoID', $log['dispositivoID']);
 			$stmt2->execute();
 			$dispositivo = $stmt2->fetch();
-			$log['usuarioID'] = $uname['nombre'];
-			$log['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
-			fputcsv($fp, $log);
+			$texto = "[" . $log['fecha'] . "] " . $uname['nombre'] . " ID: (" . $log['usuarioID'] . ") "  . $log['accion'] . " " . $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+			fputcsv($fp, array($texto));
 		}
 		fclose($fp);
 		exit();
