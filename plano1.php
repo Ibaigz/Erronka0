@@ -1,6 +1,21 @@
 <?php
 include "./connection/getConnection.php";
 include "dbcreate.php";
+session_start();
+require_once 'dbcreate.php';
+
+$con = getConnection();
+
+// Seleccionar todos los dispositivos
+$sql = "SELECT * FROM dispositivo";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+$todos = $stmt->fetchAll();
+// Seleccionar las últimas 10 acciones
+$sql = "SELECT * FROM acciones ORDER BY actionID DESC LIMIT 10";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+$log = $stmt->fetchAll();
 
 ?>
 
