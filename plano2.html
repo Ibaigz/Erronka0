@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./plano2.css">
+    <title>Centro de control</title>
+
+</head>
+
+<body>
+
+    <header>
+        MENU
+    </header>
+    <main>
+        <div class="container">
+            <section id="section1">
+                <img class="plano" src="plano2.jpg" alt="">
+            </section>
+
+            <section id="section2">
+                <div class="fondoP">
+                    <h1>Panel de control</h1>
+                </div>
+                <div class="botones">
+                    <div id="myBombilla" class="fondoBoton">
+                        LUCES
+                        <img id="bombilla" src="./media/bombilla.png" alt="">
+                    </div>
+                    <div class="fondoBoton">
+                        LUCES
+                    </div>
+                    <div id="myRouter" class="fondoBoton1">
+                        ROUTER
+                        <img id="router" src="./media/router.png" alt="">
+                    </div>
+                    <div id="myCalefaccion" class="fondoBoton1" onclick="mostrarAlerta()">
+                        CALEFAC.
+                        <img id="temperatura" src="./media/temperatura.png" alt="">
+                    </div>
+                    <div class="fondoBoton">
+                        LUCES
+                    </div>
+                    <div class="fondoBoton">
+                        LUCES
+                    </div>
+                    <div class="fondoBoton">
+                        LUCES
+                    </div>
+                    <div class="fondoBoton">
+                        LUCES
+                    </div>
+                    <div class="fondoBoton">
+                        LUCES
+                    </div>
+                </div>
+            </section>
+            </container>
+    </main>
+
+    <script>
+        document.getElementById("myBombilla").addEventListener("click", function () {
+            this.classList.toggle("changed");
+        });
+    </script>
+
+    <script>
+        document.getElementById("myCalefaccion").addEventListener("click", function () {
+            this.classList.toggle("encendido");
+        });
+    </script>
+
+    <script>
+        document.getElementById('myRouter').addEventListener('click', function () {
+            var image = document.getElementById('router');
+            if (image.style.display === 'block') {
+                image.style.display = 'none';
+            } else {
+                image.style.display = 'block';
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById("myRouter").addEventListener("click", function () {
+            this.classList.toggle("encendido");
+        });
+    </script>
+
+    <script>
+        let mensajes = [
+            '¡Las calefacciones del centro se han encendido!',
+            '¡Las calefacciones del centro se han apagado!',
+        ];
+        let indice = 0;
+
+        function mostrarAlerta() {
+            alert(mensajes[indice]);
+            indice = (indice + 1) % mensajes.length; // Cambia el índice para el siguiente mensaje
+        }
+    </script>
+
+
+</body>
+
+</html>
