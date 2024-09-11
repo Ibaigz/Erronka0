@@ -23,65 +23,61 @@ $log = $stmt->fetchAll();
 
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./plano1.css" />
-  <title>Document</title>
-</head>
-
-<body>
-  <header>MENU</header>
-  <main>
-
-    <div class="container">
-      <section id="section1">
-        <img
-          id="planoOff"
-          class="plano"
-          src="./media/Plano1_Off.jpg"
-          alt="" />
-        <img
-          id="planoOn"
-          class="plano"
-          src="./media/Plano1_On.jpg"
-          alt="" />
-        <div class="logTitle">
-          Historial de Logs
-
-          <div class="logText">
-            <?php foreach ($log as $logs) : ?>
-              <?php echo "> [" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID'] . "<br>";  ?>
-            <?php endforeach; ?>
-          </div>
-        </div>
-
-
-
-      </section>
-      <section id="s2">
-        <div class="fondoP">
-          <h1>PANEL DE CONTROL</h1>
-        </div>
-        <form action="">
-          <div class="botones">
-            <div id="myBombilla" class="fondoBoton">
-              LUCES
-              <img id="bombilla" src="./media/bombilla.png" alt="" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./plano1.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <header>MENU</header>
+    <main>
+      
+        <div class="container">
+          <section id="section1">
+            <img
+              id="planoOff"
+              class="plano"
+              src="./media/Plano1_Off.jpg"
+              alt=""
+            />
+            <img
+              id="planoOn"
+              class="plano"
+              src="./media/Plano1_On.jpg"
+              alt=""
+            />
+            <div class="logTitle">
+              Historial de Logs
+              
+              <div class="logText">
+              <?php foreach ($log as $logs) : ?>
+                <p><?php echo "[" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
+              <?php endforeach; ?>
+                
+              </div>
             </div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div onclick="textoEscrito()" id="myAlarma" class="fondoBoton">ALARMA</div>
-          </div>
-        </form>
-      </section>
+          </section>
+          <section id="section2">
+            <div class="fondoP">
+              <h1>PANEL DE CONTROL</h1>
+            </div>
+            <div class="botones">
+              <div id="myBombilla" class="fondoBoton">
+                LUCES
+                <img id="bombilla" src="./media/bombilla.png" alt="" />
+              </div>
+              <div class="fondoBoton">LUCES</div>
+              <div class="fondoBoton">LUCES</div>
+              <div class="fondoBoton">LUCES</div>
+              <div class="fondoBoton">LUCES</div>
+              <div class="fondoBoton">LUCES</div>
+              <div class="fondoBoton">LUCES</div>
+              <div class="fondoBoton">LUCES</div>
+              <div class="fondoBoton">LUCES</div>
+              <div onclick="textoEscrito()" id="myAlarma" class="fondoBoton">ALARMA</div>
+            </div>
+          </section>
 
 
       <div id="alarmBlock"></div>
