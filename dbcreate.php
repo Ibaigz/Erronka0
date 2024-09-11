@@ -84,10 +84,12 @@ function inserDispositivos() {
 	$sql = "INSERT INTO dispositivo (tipo, piso, estado) VALUES
 		('Luz', 1, 0),
 		('Luz', 2, 0),
-		('Router', 1, 1),
-		('Router', 2, 1),
+		('Router', 1, 0),
+		('Router', 2, 0),
 		('Calefaccion', 1, 0),
-		('Calefaccion', 2, 0)";
+		('Calefaccion', 2, 0),
+		('Telefono', 1, 1),
+		('Alarma', 1, 1)";
 	$conn->exec($sql);
 	$conn = null;
 }
@@ -96,9 +98,9 @@ function insertAcciones() {
 	$conn = getConnection();
 	$sql = "INSERT INTO acciones (usuarioID, dispositivoID, accion) VALUES
 		(1, 1, 'encender'),
-		(1, 2, 'encender'),
+		(1, 1, 'apagar'),
+		(2, 3, 'encender'),
 		(2, 3, 'apagar'),
-		(2, 4, 'apagar'),
 		(3, 5, 'encender'),
 		(3, 6, 'encender'),
 		(1, 5, 'apagar'),

@@ -5,7 +5,7 @@ require_once 'dbcreate.php';
 $con = getConnection();
 
 // Seleccionar todos los dispositivos
-$sql = "SELECT * FROM dispositivo";
+$sql = "SELECT * FROM dispositivo WHERE tipo != 'Alarma' AND tipo != 'Telefono'";
 $stmt = $con->prepare($sql);
 $stmt->execute();
 $todos = $stmt->fetchAll();
@@ -79,7 +79,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$stmt2->bindParam(':dispositivoID', $log['dispositivoID']);
 			$stmt2->execute();
 			$dispositivo = $stmt2->fetch();
-			$texto = "[" . $log['fecha'] . "] " . $uname['nombre'] . " ID: (" . $log['usuarioID'] . ") "  . $log['accion'] . " " . $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+			if ($log['accion'] == "encender" || $log['accion'] == "apagar") {
+				$texto = "[" . $log['fecha'] . "] " . $uname['nombre'] . " ID: (" . $log['usuarioID'] . ") "  . $log['accion'] . " " . $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+			}
+			else if ($log['accion'] == "activar alarma" || $log['accion'] == "llamar emergencias") {
+				$texto = "[" . $log['fecha'] . "] " . $uname['nombre'] . " ID: (" . $log['usuarioID'] . ") "  . $log['accion'];
+			}
 			fputcsv($fp, array($texto));
 		}
 		fclose($fp);
@@ -98,7 +103,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<h1>Erronka 0 - Index</h1>
 		<p>Dispositivos:</p>
 		<?php foreach ($todos as $dispositivo) : ?>
-			<p><?php echo $dispositivo['tipo'] . " piso: " . $dispositivo['piso'] . " - Estado: " . $dispositivo['estado']; ?></p>
+			<p>
+				<?php $estado = ($dispositivo['estado'] == 0) ? "apagado" : "encendido";
+				 echo $dispositivo['tipo'] . " piso: " . $dispositivo['piso'] . " - Estado: " . $estado; ?>
+			</p>
 			<?php if (isset($_SESSION['uname'])) : ?>
 				<form action="index.php" method="post">
 					<input type="hidden" name="id" value="<?php echo $dispositivo['dispositivoID']; ?>">
@@ -109,6 +117,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				</form>
 			<?php endif; ?>
 		<?php endforeach; ?>
+		<form action="index.php" method="post">
+			<input type="hidden" name="uname" value="<?php echo $_SESSION['uname']; ?>">
+			<input type="hidden" name="uid" value="<?php echo $_SESSION['userID']; ?>">
+			<input type="submit" name="Dar alarma" value="Alarma">
+		</form>
 		<p>Últimas 10 acciones:</p>
 		<?php foreach ($log as $logs) : ?>
 			<p><?php echo "[" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
