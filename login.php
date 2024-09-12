@@ -34,19 +34,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <html>
     <head>
+    <link rel="stylesheet" type="text/css" href="login.css">
         <title>Erronka 0 - Login</title>
     </head>
     <body>
         <h1>Erronka 0 - Login</h1>
+        <section class="form-login">
         <form action="login.php" method="post">
             <label for="uname">Erabiltzailea:</label>
-            <input type="text" id="uname" name="uname" required><br><br>
+            <input class="controls" type="text" id="uname" name="uname" required><br><br>
             <label for="pass">Pasahitza:</label>
-            <input type="password" id="pass" name="pass" required><br><br>
-            <input type="submit" name="login" value="Sartu">
+            <input class="controls" type="password" id="pass" name="pass" required><br><br>
+            <input class="buttons" type="submit" name="login" value="Sartu">
         </form>
 		<?php if (isset($_SESSION['uname'])): ?>
 			<a href="index.php">Atzera</a>
 		<?php endif; ?>
+        </section>
+        
     </body>
 </html>

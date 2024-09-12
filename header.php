@@ -10,16 +10,19 @@ if (isset($_GET['logout'])) {
     logout();
 }
 ?>
+<head>
+    <link rel="stylesheet" type="text/css" href="header.css">
+</head>
 
 <html>
     <body>
         <?php if (isset($_SESSION['uname'])): ?>
             <a href="?logout=true">
-                <button>Saioa itxi</button>
+                <button class="login-btn" >Saioa itxi</button>
             </a>
         <?php else: ?>
             <a href="login.php">
-				<button>Saioa hasi</button>
+				<button class="login-btn">Saioa hasi</button>
 			</a>
         <?php endif; ?>
     </body>

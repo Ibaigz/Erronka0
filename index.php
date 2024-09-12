@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['userID'])){
+	header('Location: login.php');
+	exit;
+}
 require_once 'dbcreate.php';
 
 $con = getConnection();
@@ -97,37 +101,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <html>
 	<head>
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" type="text/css" href="header.css">
 		<title>Erronka 0 - Index</title>
 	</head>
 	<body>
 		<h1>Erronka 0 - Index</h1>
-		<p>Dispositivos:</p>
-		<?php foreach ($todos as $dispositivo) : ?>
-			<p>
-				<?php $estado = ($dispositivo['estado'] == 0) ? "apagado" : "encendido";
-				 echo $dispositivo['tipo'] . " piso: " . $dispositivo['piso'] . " - Estado: " . $estado; ?>
-			</p>
-			<?php if (isset($_SESSION['uname'])) : ?>
-				<form action="index.php" method="post">
-					<input type="hidden" name="id" value="<?php echo $dispositivo['dispositivoID']; ?>">
-					<input type="hidden" name="uname" value="<?php echo $_SESSION['uname']; ?>">
-					<input type="hidden" name="uid" value="<?php echo $_SESSION['userID']; ?>">
-					<input type="hidden" name="estado" value="<?php echo $dispositivo['estado']; ?>">
-					<input type="submit" name="toggle" value="Toggle">
-				</form>
-			<?php endif; ?>
-		<?php endforeach; ?>
-		<form action="index.php" method="post">
-			<input type="hidden" name="uname" value="<?php echo $_SESSION['uname']; ?>">
-			<input type="hidden" name="uid" value="<?php echo $_SESSION['userID']; ?>">
-			<input type="submit" name="Dar alarma" value="Alarma">
-		</form>
-		<p>Últimas 10 acciones:</p>
-		<?php foreach ($log as $logs) : ?>
-			<p><?php echo "[" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
-		<?php endforeach; ?>
-		<form method="post" action="index.php">
-			<input type="submit" name="Download" value="Download">
-		</form>
+
+	<div class="w3-button w3-white w3-ripple" onclick="window.location.href='plano1.php'">
+  			<img src="./media/planoD.png" alt="Alps">
+  		<div class="w3-container w3-center">
+    		<p>Acceder al Plano 1</p>
+  		</div>
+	</div>
+	<div class="w3-button w3-white w3-ripple" onclick="window.location.href='plano2.php'">
+  			<img src="./media/planoD.png" alt="Alps">
+  		<div class="w3-container w3-center">
+    		<p>Acceder al Plano 2</p>
+  		</div>
+	</div>
+	<footer class="footer">
+        <div class="footer-section">
+            <h4>Descargar Logs:</h4>
+            <p>Haz clic en el botón para descargar los logs del sistema.</p>
+			<form method="post" action="index.php">
+				<input type="submit" name="Download" value="LOGS" class="download-btn">
+			</form>
+        </div>
+        <div class="footer-section">
+            <h4>Contacto:</h4>
+            <p>Email: idazkaria@fpTXurdinaga.com</p>
+        </div>
+		<div class="footer-section">
+			<img src="./media/Logo.png" alt="">
+		</div>
+    </footer>
 	</body>
+
 </html>
