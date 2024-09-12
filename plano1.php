@@ -16,6 +16,7 @@ $sql = "SELECT * FROM dispositivo";
 $stmt = $con->prepare($sql);
 $stmt->execute();
 $todos = $stmt->fetchAll();
+
 // Seleccionar las últimas 10 acciones
 $sql = "SELECT * FROM acciones ORDER BY actionID DESC LIMIT 10";
 $stmt = $con->prepare($sql);
@@ -24,21 +25,22 @@ $log = $stmt->fetchAll();
 
 //Hacer el log más legible
 foreach ($log as $key => $logs) {
-	$sql = "SELECT nombre FROM users WHERE usuarioID = :uid";
-	$stmt = $con->prepare($sql);
-	$stmt->bindParam(':uid', $logs['usuarioID']);
-	$stmt->execute();
-	$uname = $stmt->fetch();
-	$log[$key]['usuarioID'] = $uname['nombre'];
-	$sql2 = "SELECT tipo, piso FROM dispositivo WHERE dispositivoID = :dispositivoID";
-	$stmt2 = $con->prepare($sql2);
-	$stmt2->bindParam(':dispositivoID', $logs['dispositivoID']);
-	$stmt2->execute();
-	$dispositivo = $stmt2->fetch();
-	$log[$key]['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+  $sql = "SELECT nombre FROM users WHERE usuarioID = :uid";
+  $stmt = $con->prepare($sql);
+  $stmt->bindParam(':uid', $logs['usuarioID']);
+  $stmt->execute();
+  $uname = $stmt->fetch();
+  $log[$key]['usuarioID'] = $uname['nombre'];
+  $sql2 = "SELECT tipo, piso FROM dispositivo WHERE dispositivoID = :dispositivoID";
+  $stmt2 = $con->prepare($sql2);
+  $stmt2->bindParam(':dispositivoID', $logs['dispositivoID']);
+  $stmt2->execute();
+  $dispositivo = $stmt2->fetch();
+  $log[$key]['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
 }
-
 ?>
+
+
 
 
 
@@ -75,9 +77,7 @@ foreach ($log as $key => $logs) {
           Historial de Logs
 
           <div class="logText">
-            <?php foreach ($log as $logs) : ?>
-              <?php echo "> [" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID'] . "<br>";  ?>
-            <?php endforeach; ?>
+            
           </div>
         </div>
 
@@ -90,7 +90,7 @@ foreach ($log as $key => $logs) {
         </div>
         <form action="">
           <div class="botones">
-            <div id="myBombilla" class="fondoBoton <?php echo $todos[0]['estado'] == 0 ? '' : 'changed'  ?>">
+            <div id="myBombilla" class="fondoBoton <?php echo $todos[0]['estado'] == 0 ? '' : 'changed'; ?>">
               LUCES
               <img id="bombilla" src="./media/bombilla.png" alt="" />
             </div>
@@ -119,35 +119,30 @@ foreach ($log as $key => $logs) {
     let planoOff = document.getElementById("planoOff");
     let bombillaClicked = false;
     let miDato;
+    const logDiv = document.querySelector(".logText");
     document.getElementById("myBombilla").addEventListener("click", function() {
-      // BotonEncendido();
-
-
-      // function BotonEncendido() {
-        this.classList.toggle("changed");
-
-      // }
+      // Cambiar el estado del botón de luz
+      this.classList.toggle("changed");
+     
+      // logDiv.removeChild(logDiv.lastElementChild);
+      // Actualizar la visibilidad de las imágenes
       planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
       planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
+      // Enviar datos al servidor
       let miDato = new URLSearchParams();
-      bombillaClicked = <?php echo $todos[0]['estado'] == 0 ? "false" : "true"; ?>;
-
-
-
-      miDato.append("valor", bombillaClicked ? "apagado" : "encendido");
-      miDato.append("dispositivoID", 1);
-      miDato.append("uid", <?php echo $_SESSION['userID']; ?>);
-
+      miDato.append("valor", action);
+      miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+      miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
 
       fetch('procesar.php', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded' // Enviar como form
+            'Content-Type': 'application/x-www-form-urlencoded'
           },
-          body: miDato.toString() // Enviar la cadena como form-urlencoded
+          body: miDato.toString()
         })
-        .then(response => response.text()) // Interpretar la respuesta como texto
+        .then(response => response.text())
         .then(data => {
           console.log('Respuesta del servidor:', data);
         })
@@ -155,12 +150,29 @@ foreach ($log as $key => $logs) {
           console.error('Error:', error);
         });
     });
+    repoblar();
+
+    function repoblar() {
+    console.log("Repoblando...");
+    fetch('get_logs.php')
+        .then(response => response.json())
+        .then(data => {
+            const logDiv = document.querySelector(".logText");
+            logDiv.innerHTML = "";
+            data.forEach(log => {
+                logDiv.insertAdjacentHTML('beforeend', `> [${log['fecha']}] ${log['usuarioID']} ${log['accion']} ${log['dispositivoID']}<br>`);
+            });
+        })
+        .catch(error => {
+            console.error('Error al obtener los logs:', error);
+        });
+}
+
     let alarma = document.getElementById("alarmBlock");
     let alarmActive = false;
     let emergencia = document.getElementById("emergencia");
     let x = document.getElementById("x");
 
-    //Envio de datos a la base de datos
 
     document.getElementById("myAlarma").addEventListener("click", function() {
       alarma.classList.toggle("changedAlarma");
@@ -217,6 +229,8 @@ foreach ($log as $key => $logs) {
 
       efectoTextTyping(div, texto);
     }
+    Window.onload = repoblar();
+
   </script>
 </body>
 

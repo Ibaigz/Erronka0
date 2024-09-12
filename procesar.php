@@ -18,9 +18,12 @@ if ($conn->connect_error) {
 
 // Recibir los datos enviados por JavaScript usando $_POST
 if (isset($_POST['valor']) && isset($_POST['dispositivoID']) && isset($_POST['uid'])) {
-    $estado = $_POST['valor'];
     $dispositivoID = $_POST['dispositivoID'];
     $usuarioID = $_POST['uid'];
+	$sq = "SELECT estado FROM dispositivo WHERE dispositivoID = $dispositivoID";
+	$result = $conn->query($sq);
+	$row = $result->fetch_assoc();
+	$estado = $row['estado'] == 0 ? "encendido" : "apagado";
 
     // Preparar la consulta SQL para actualizar el estado del dispositivo
     $sql = "UPDATE dispositivo SET estado = !estado WHERE dispositivoID = ?";
