@@ -10,25 +10,16 @@ $filename = "logs.csv";
 $fp = fopen('php://output', 'w');
 header('Content-type: application/csv');
 header('Content-Disposition: attachment; filename=' . $filename);
+$query_nombre = "SELECT nombre FROM users";
+$stmt = $con->prepare($query_nombre);
+$stmt->execute();
+$nombre = $stmt->fetchAll();
+$query_dispositivo = "SELECT tipo, piso FROM dispositivo";
+$stmt = $con->prepare($query_dispositivo);
+$stmt->execute();
+$dispositivo = $stmt->fetchAll();
 foreach ($logs as $log) {
-	//Buscar todos los nombres para añadirlos al log
-	$sql = "SELECT nombre FROM users WHERE usuarioID = :uid";
-	$stmt = $con->prepare($sql);
-	$stmt->bindParam(':uid', $log['usuarioID']);
-	$stmt->execute();
-	$uname = $stmt->fetch();
-	//Buscar info de los dispositivos
-	$sql2 = "SELECT tipo, piso FROM dispositivo WHERE dispositivoID = :dispositivoID";
-	$stmt2 = $con->prepare($sql2);
-	$stmt2->bindParam(':dispositivoID', $log['dispositivoID']);
-	$stmt2->execute();
-	$dispositivo = $stmt2->fetch();
-	if ($log['accion'] == "encender" || $log['accion'] == "apagar") {
-		$texto = "[" . $log['fecha'] . "] " . $uname['nombre'] . " ID: (" . $log['usuarioID'] . ") "  . $log['accion'] . " " . $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
-	}
-	else if ($log['accion'] == "activar alarma" || $log['accion'] == "llamar emergencias") {
-		$texto = "[" . $log['fecha'] . "] " . $uname['nombre'] . " ID: (" . $log['usuarioID'] . ") "  . $log['accion'];
-	}
+	$texto = "[" . $log['fecha'] . "] - " . $nombre[$log['usuarioID'] - 1]['nombre'] . " ID: (" . $log['usuarioID'] . ") - " . $log['accion'] . " " . $dispositivo[$log['dispositivoID'] - 1]['tipo'] . " piso " . $dispositivo[$log['dispositivoID'] - 1]['piso'];
 	fputcsv($fp, array($texto));
 }
 fclose($fp);
