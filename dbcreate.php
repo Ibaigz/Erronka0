@@ -74,7 +74,8 @@ function insertUsers() {
 	$sql = "INSERT INTO users (nombre, password) VALUES
 		('Ibai', '123123'),
 		('Igotz', '123123'),
-		('Jon', '123123')";
+		('Jon', '123123'),
+		('dam', 'dam')";
 	$conn->exec($sql);
 	$conn = null;
 }
@@ -115,7 +116,6 @@ if (!testConnection()) {
 	insertUsers();
 	createDispositivoTable();
 	inserDispositivos();
-	sleep(5);
 	createAccionesTable();
 	insertAcciones();
 }
