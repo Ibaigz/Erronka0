@@ -39,19 +39,17 @@ $log = $stmt->fetchAll();
     <main>
         <div class="container">
         <section id="section1">
-                <img id="plano2Off" class="plano" src="./media/Plano2_Off.jpg" alt="">
+                <img id="planoOff" class="plano" src="./media/Plano2_Off.jpg" alt="">
 
-                <img id="plano2On" class="plano" src="./media/Plano2_On.jpg" alt="">
+                <img id="planoOn" class="plano" src="./media/Plano2_On.jpg" alt="">
                 
-            <div class="logTitle">
-              Historial de Logs
-              
-              <div class="logText">
-              <?php foreach ($log as $logs) : ?>
-                <p><?php echo "[" . $logs['fecha'] . "] " . $logs['usuarioID'] . " " . $logs['accion'] . " " . $logs['dispositivoID']; ?></p>
-              <?php endforeach; ?>
-                
-            </div>
+        <div class="logTitle">
+          Historial de Logs
+
+          <div class="logText">
+
+          </div>
+        </div>
         </section>
 
             <section id="s2">
@@ -136,77 +134,151 @@ $log = $stmt->fetchAll();
         }
     </script>
     <script>
-        let planoOn = document.getElementById("plano2On");
-        let planoOff = document.getElementById("plano2Off");
+    // JavaScript para controlar la bombilla y la alarma
+    let planoOn = document.getElementById("planoOn");
+    let planoOff = document.getElementById("planoOff");
+    let bombillaClicked = false;
+    let miDato;
+    const logDiv = document.querySelector(".logText");
 
-        document
-            .getElementById("myBombilla")
-            .addEventListener("click", function () {
-                this.classList.toggle("changed");
-                planoOn.style.display =
-                    planoOn.style.display === "block" ? "none" : "block";
-                planoOff.style.display =
-                    planoOff.style.display === "none" ? "block" : "none";
-            });
-        let alarma = document.getElementById("alarmBlock");
-        let alarmActive = false;
-        let emergencia = document.getElementById("emergencia");
-        let x = document.getElementById("x");
+    document.getElementById("myBombilla").addEventListener("click", function() {
+      // Cambiar el estado del botón de luz
+      this.classList.toggle("changed");
 
-        document.getElementById("myAlarma").addEventListener("click", function () {
-            alarma.classList.toggle("changedAlarma");
+      // Alternar la acción según el estado del bombilla
+      let action = this.classList.contains('changed') ? 'turnOn' : 'turnOff';
 
-            if (emergencia.style.display === "block") {
-                emergencia.style.display = "none";
-            } else {
-                emergencia.style.display = "block";
-            }
+      // Actualizar la visibilidad de las imágenes
+      planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
+      planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
-            x.style.display = "block";
+      actualizarLogs(action);
+    });
 
-            if (!alarmActive) {
-                alarma.style.display = "block";
-                alarma.classList.add("fading");
-                alarmActive = true;
-                setTimeout(() => {
-                    alarma.classList.remove("fading"); // Detiene la animación
-                    alarma.style.display = "none"; // Oculta el div
-                    alarmActive = false;
-                }, 25000);
-            } else {
-                alarma.style.display = "none";
-                alarma.classList.remove("fading");
-                alarmActive = false;
-            }
+    function actualizarLogs(action) {
+      // Enviar datos al servidor
+      console.log("Enviando datos al servidor...");
+      let miDato = new URLSearchParams();
+      miDato.append("valor", action);
+      miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+      miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
+
+      fetch('procesar.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: miDato.toString()
+
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log('Respuesta del servidor:', data);
+          repoblar();
+        })
+        .catch(error => {
+          console.error('Error:', error);
         });
-        function cerrar() {
-            emergencia.style.display = "none";
-            x.style.display = "none";
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-        }
+    }
 
-        function textoEscrito() {
-            const div = document.getElementById("emergencia");
-            let texto = "LLamando a los servicios de emergencia                <br><br>Reiniciando sistema de seguridad...                      <br><br>Aspersores en marcha                  <br><br>Apagando calefaccion...                  <br><br>Reiniciando routers...           <br><br>Guardando y descargando datos...";
+    // Función para repoblar los logs
+    function repoblar() {
+      console.log("Repoblando...");
+      fetch('get_logs.php')
+        .then(response => response.json())
+        .then(data => {
+          const logDiv = document.querySelector(".logText");
+          logDiv.innerHTML = "";
+          data.forEach(log => {
+            logDiv.insertAdjacentHTML('beforeend', `> [${log['fecha']}] ${log['usuarioID']} ${log['accion']} ${log['dispositivoID']}<br>`);
+          });
+        })
+        .catch(error => {
+          console.error('Error al obtener los logs:', error);
+        });
+    }
 
-            function efectoTextTyping(elemento, texto, i = 0) {
-                if (texto.substring(i, i + 4) === "<br>") {
-                    elemento.innerHTML += "<br>";
-                    i += 4;
-                } else {
-                    elemento.innerHTML += texto[i];
-                    i++;
-                }
+    // JavaScript para controlar la alarma
+    let alarma = document.getElementById("alarmBlock");
+    let alarmActive = false;
+    let emergencia = document.getElementById("emergencia");
+    let x = document.getElementById("x");
 
-                if (i >= texto.length) return;
 
-                setTimeout(() => efectoTextTyping(elemento, texto, i), 100);
+    document.getElementById("myAlarma").addEventListener("click", function() {
+      alarma.classList.toggle("changedAlarma");
+
+      if (emergencia.style.display === "block") {
+        emergencia.style.display = "none";
+      } else {
+        emergencia.style.display = "block";
+      }
+
+      x.style.display = "block";
+
+      if (!alarmActive) {
+        let miDato2 = new URLSearchParams();
+        miDato2.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
+
+        fetch('log_alerta.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: miDato2.toString()
+          })
+          .then(response => response.text())
+          .then(data => {
+            console.log('Respuesta del servidor:', data);
+          })
+          .catch(error => {
+              console.error('Error:', error);
             }
+            //repoblar();
+          );
+        alarma.style.display = "block";
+        alarma.classList.add("fading");
+        alarmActive = true;
+        setTimeout(() => {
+          alarma.classList.remove("fading"); // Detiene la animación
+          alarma.style.display = "none"; // Oculta el div
+          alarmActive = false;
+        }, 25000);
+      } else {
+        alarma.style.display = "none";
+        alarma.classList.remove("fading");
+        alarmActive = false;
+      }
+    });
 
-            efectoTextTyping(div, texto);
+    function cerrar() {
+      emergencia.style.display = "none";
+      x.style.display = "none";
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    }
+
+    function textoEscrito() {
+      const div = document.getElementById("emergencia");
+      let texto = "LLamando a los servicios de emergencia                <br><br>Reiniciando sistema de seguridad...                      <br><br>Aspersores en marcha                  <br><br>Apagando calefaccion...                  <br><br>Reiniciando routers...           <br><br>Guardando y descargando datos...";
+
+      function efectoTextTyping(elemento, texto, i = 0) {
+        if (texto.substring(i, i + 4) === "<br>") {
+          elemento.innerHTML += "<br>";
+          i += 4;
+        } else {
+          elemento.innerHTML += texto[i];
+          i++;
         }
+
+        if (i >= texto.length) return;
+
+        setTimeout(() => efectoTextTyping(elemento, texto, i), 100);
+      }
+
+      efectoTextTyping(div, texto);
+    }
     </script>
         <script>
             let alarmaEncendida = false;
@@ -241,6 +313,8 @@ $log = $stmt->fetchAll();
 
                 }
             }
+
+            window.onload = repoblar();
         </script>
 
 
