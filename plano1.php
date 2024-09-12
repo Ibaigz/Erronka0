@@ -115,59 +115,66 @@ foreach ($log as $key => $logs) {
     </div>
   </main>
   <script>
+	// JavaScript para controlar la bombilla y la alarma
     let planoOn = document.getElementById("planoOn");
     let planoOff = document.getElementById("planoOff");
     let bombillaClicked = false;
     let miDato;
     const logDiv = document.querySelector(".logText");
-    document.getElementById("myBombilla").addEventListener("click", function() {
-      // Cambiar el estado del botón de luz
-      this.classList.toggle("changed");
-     
-      // logDiv.removeChild(logDiv.lastElementChild);
-      // Actualizar la visibilidad de las imágenes
-      planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
-      planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
+	document.getElementById("myBombilla").addEventListener("click", function() {
+		// Cambiar el estado del botón de luz
+		this.classList.toggle("changed");
 
-      // Enviar datos al servidor
-      let miDato = new URLSearchParams();
-      miDato.append("valor", action);
-      miDato.append("dispositivoID", 1); // Ajusta según sea necesario
-      miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
+		// Alternar la acción según el estado del bombilla
+		let action = this.classList.contains('changed') ? 'turnOn' : 'turnOff';
 
-      fetch('procesar.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: miDato.toString()
-        })
-        .then(response => response.text())
-        .then(data => {
-          console.log('Respuesta del servidor:', data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    });
-    repoblar();
+		// Actualizar la visibilidad de las imágenes
+		planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
+		planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
+		// Enviar datos al servidor
+		let miDato = new URLSearchParams();
+		miDato.append("valor", action);
+		miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+		miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
+
+		fetch('procesar.php', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: miDato.toString()
+			})
+			.then(response => response.text())
+			.then(data => {
+			console.log('Respuesta del servidor:', data);
+			})
+			.catch(error => {
+			console.error('Error:', error);
+			});
+		repoblar();
+	});
+	// Fin del código de la bombilla
+
+	// Función para repoblar los logs
     function repoblar() {
-    console.log("Repoblando...");
-    fetch('get_logs.php')
-        .then(response => response.json())
-        .then(data => {
-            const logDiv = document.querySelector(".logText");
-            logDiv.innerHTML = "";
-            data.forEach(log => {
-                logDiv.insertAdjacentHTML('beforeend', `> [${log['fecha']}] ${log['usuarioID']} ${log['accion']} ${log['dispositivoID']}<br>`);
-            });
-        })
-        .catch(error => {
-            console.error('Error al obtener los logs:', error);
-        });
-}
+		console.log("Repoblando...");
+		fetch('get_logs.php')
+			.then(response => response.json())
+			.then(data => {
+				const logDiv = document.querySelector(".logText");
+				logDiv.innerHTML = "";
+				data.forEach(log => {
+					logDiv.insertAdjacentHTML('beforeend', `> [${log['fecha']}] ${log['usuarioID']} ${log['accion']} ${log['dispositivoID']}<br>`);
+				});
+			})
+			.catch(error => {
+				console.error('Error al obtener los logs:', error);
+			});
+	}
+	// Fin de la función para repoblar los logs
 
+	// JavaScript para controlar la alarma
     let alarma = document.getElementById("alarmBlock");
     let alarmActive = false;
     let emergencia = document.getElementById("emergencia");
@@ -186,6 +193,25 @@ foreach ($log as $key => $logs) {
       x.style.display = "block";
 
       if (!alarmActive) {
+		let miDato2 = new URLSearchParams();
+		miDato2.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
+
+		fetch ('log_alerta.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: miDato2.toString()
+			})
+			.then(response => response.text())
+			.then(data => {
+				console.log('Respuesta del servidor:', data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			}
+			//repoblar();
+			);
         alarma.style.display = "block";
         alarma.classList.add("fading");
         alarmActive = true;
@@ -229,6 +255,8 @@ foreach ($log as $key => $logs) {
 
       efectoTextTyping(div, texto);
     }
+	// Fin del código de la alarma
+
     Window.onload = repoblar();
 
   </script>
