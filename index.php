@@ -120,8 +120,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     		<p>Acceder al Plano 2</p>
   		</div>
 	</div>
-		<form method="post" action="index.php">
-			<input type="submit" name="Download" value="Download">
-		</form>
+	<footer class="footer">
+        <div class="footer-section">
+            <h4>Descargar Logs:</h4>
+            <p>Haz clic en el botón para descargar los logs del sistema.</p>
+			<form method="post" action="index.php">
+				<input type="submit" name="Download" value="LOGS" class="download-btn">
+			</form>
+        </div>
+        <div class="footer-section">
+            <h4>Contacto:</h4>
+            <p>Email: idazkaria@fpTXurdinaga.com</p>
+        </div>
+		<div class="footer-section">
+			<img src="./media/Logo.png" alt="">
+		</div>
+    </footer>
 	</body>
+
 </html>
