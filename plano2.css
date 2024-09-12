@@ -131,7 +131,7 @@ header {
 
 }
 .plano {
-    width: 90%;
+    width: 100%;
 }
 
 #router {
@@ -161,6 +161,7 @@ header {
 
 #plano2On {
     display: none;
+    width: 100%;
 }
 
 #myAlarma{
@@ -168,7 +169,7 @@ header {
 }
 
 .plano {
-    width: 80%;
+    width: 100%;
 }
 
 #emergencia{
@@ -193,12 +194,11 @@ header {
 }
 
 .logTitle{
-    padding-top: 1000px;
     background-color: rgba(255, 255, 255, 0.67);
     width: 55%;
     padding: 7px;
     padding-left: 2%;
-    height: 25%;
+    height: 30%;
     border-radius: 7px;
     margin-left: 200px;
     box-shadow:-5px -5px 5px rgba(255, 255, 255, 0.1),5px 5px 5px rgba(0, 0, 0, 0.1);

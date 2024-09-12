@@ -2,10 +2,6 @@
 include "./connection/getConnection.php";
 include "dbcreate.php";
 session_start();
-if (!isset($_SESSION['userID'])){
-	header('Location: login.php');
-	exit;
-}
 require_once 'dbcreate.php';
 
 $con = getConnection();
