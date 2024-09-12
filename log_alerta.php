@@ -11,7 +11,7 @@ try {
 if(isset($_POST['uid'])) {
     // Preparar datos para introducir
     $uid = $_POST['uid'];
-    $mensaje = "ha activado la alarma";
+    $mensaje = "activado";
     // La ID de alarma es 8, pero por si cambia meto query
     $sql_alarma = "SELECT dispositivoID FROM dispositivo WHERE tipo = 'alarma'";
     $result = $conn->query($sql_alarma);
