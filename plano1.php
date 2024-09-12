@@ -3,9 +3,9 @@ include "./connection/getConnection.php";
 include "dbcreate.php";
 session_start();
 
-if (!isset($_SESSION['userID'])){
-	header('Location: login.php');
-	exit;
+if (!isset($_SESSION['userID'])) {
+  header('Location: login.php');
+  exit;
 }
 require_once 'dbcreate.php';
 
@@ -59,7 +59,7 @@ $todos = $stmt->fetchAll();
           Historial de Logs
 
           <div class="logText">
-            
+
           </div>
         </div>
 
@@ -97,68 +97,72 @@ $todos = $stmt->fetchAll();
     </div>
   </main>
   <script>
-	// JavaScript para controlar la bombilla y la alarma
+    // JavaScript para controlar la bombilla y la alarma
     let planoOn = document.getElementById("planoOn");
     let planoOff = document.getElementById("planoOff");
     let bombillaClicked = false;
     let miDato;
     const logDiv = document.querySelector(".logText");
-	document.getElementById("myBombilla").addEventListener("click", function() {
-		// Cambiar el estado del botón de luz
-		this.classList.toggle("changed");
 
-		// Alternar la acción según el estado del bombilla
-		let action = this.classList.contains('changed') ? 'turnOn' : 'turnOff';
+    document.getElementById("myBombilla").addEventListener("click", function() {
+      // Cambiar el estado del botón de luz
+      this.classList.toggle("changed");
 
-		// Actualizar la visibilidad de las imágenes
-		planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
-		planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
+      // Alternar la acción según el estado del bombilla
+      let action = this.classList.contains('changed') ? 'turnOn' : 'turnOff';
 
-		// Enviar datos al servidor
-		let miDato = new URLSearchParams();
-		miDato.append("valor", action);
-		miDato.append("dispositivoID", 1); // Ajusta según sea necesario
-		miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
-    
-		fetch('procesar.php', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			body: miDato.toString()
-      
-			})
-			.then(response => response.text())
-			.then(data => {
-			console.log('Respuesta del servidor:', data);
-      repoblar();
-			})
-			.catch(error => {
-			console.error('Error:', error);
-			});
-      
-	});
-	// Fin del código de la bombilla
+      // Actualizar la visibilidad de las imágenes
+      planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
+      planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
-	// Función para repoblar los logs
+      actualizarLogs(action);
+    });
+
+    function actualizarLogs(action) {
+      // Enviar datos al servidor
+      console.log("Enviando datos al servidor...");
+      let miDato = new URLSearchParams();
+      miDato.append("valor", action);
+      miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+      miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
+
+      fetch('procesar.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: miDato.toString()
+
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log('Respuesta del servidor:', data);
+          repoblar();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Función para repoblar los logs
     function repoblar() {
-		console.log("Repoblando...");
-		fetch('get_logs.php')
-			.then(response => response.json())
-			.then(data => {
-				const logDiv = document.querySelector(".logText");
-				logDiv.innerHTML = "";
-				data.forEach(log => {
-					logDiv.insertAdjacentHTML('beforeend', `> [${log['fecha']}] ${log['usuarioID']} ${log['accion']} ${log['dispositivoID']}<br>`);
-				});
-			})
-			.catch(error => {
-				console.error('Error al obtener los logs:', error);
-			});
-	}
-	// Fin de la función para repoblar los logs
+      console.log("Repoblando...");
+      fetch('get_logs.php')
+        .then(response => response.json())
+        .then(data => {
+          const logDiv = document.querySelector(".logText");
+          logDiv.innerHTML = "";
+          data.forEach(log => {
+            logDiv.insertAdjacentHTML('beforeend', `> [${log['fecha']}] ${log['usuarioID']} ${log['accion']} ${log['dispositivoID']}<br>`);
+          });
+        })
+        .catch(error => {
+          console.error('Error al obtener los logs:', error);
+        });
+    }
+    // Fin de la función para repoblar los logs
 
-	// JavaScript para controlar la alarma
+    // JavaScript para controlar la alarma
     let alarma = document.getElementById("alarmBlock");
     let alarmActive = false;
     let emergencia = document.getElementById("emergencia");
@@ -177,25 +181,25 @@ $todos = $stmt->fetchAll();
       x.style.display = "block";
 
       if (!alarmActive) {
-		let miDato2 = new URLSearchParams();
-		miDato2.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
+        let miDato2 = new URLSearchParams();
+        miDato2.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
 
-		fetch ('log_alerta.php', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				body: miDato2.toString()
-			})
-			.then(response => response.text())
-			.then(data => {
-				console.log('Respuesta del servidor:', data);
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			}
-			//repoblar();
-			);
+        fetch('log_alerta.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: miDato2.toString()
+          })
+          .then(response => response.text())
+          .then(data => {
+            console.log('Respuesta del servidor:', data);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+            }
+            //repoblar();
+          );
         alarma.style.display = "block";
         alarma.classList.add("fading");
         alarmActive = true;
@@ -239,10 +243,9 @@ $todos = $stmt->fetchAll();
 
       efectoTextTyping(div, texto);
     }
-	// Fin del código de la alarma
+    // Fin del código de la alarma
 
     Window.onload = repoblar();
-
   </script>
 </body>
 
