@@ -82,7 +82,7 @@ $todos = $stmt->fetchAll();
             <div class="fondoBoton">LUCES</div>
             <div class="fondoBoton">LUCES</div>
             <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
+            <div id="myLogs" class="fondoBoton">LOGS</div>
             <div class="fondoBoton">LUCES</div>
             <div onclick="textoEscrito()" id="myAlarma" class="fondoBoton">ALARMA</div>
           </div>
@@ -244,6 +244,30 @@ $todos = $stmt->fetchAll();
       efectoTextTyping(div, texto);
     }
     // Fin del código de la alarma
+
+	// Inicio descargar logs
+
+	document.getElementById("myLogs").addEventListener("click", function() {
+		downloadLogs();
+	});
+
+	function downloadLogs() {
+		fetch('log_download.php')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'logs.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error al descargar los logs:', error));
+	}
+	// Fin descargar logs
+
 
     Window.onload = repoblar();
   </script>
