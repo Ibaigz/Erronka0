@@ -79,7 +79,7 @@ $todos = $stmt->fetchAll();
                         ROUTER
                         <img id="router" src="./media/router.png" alt="" style="display: <?php echo $todos[3]['estado'] == 0 ? 'none' : 'block'?>;">
                     </div>
-                    <div id="myCalefaccion" class="fondoBoton1 <?php echo $todos[5]['estado'] == 0 ? '' : 'encendido'?>" onclick="mostrarAlerta()">
+                    <div id="myCalefaccion" class="fondoBoton1 <?php echo $todos[5]['estado'] == 0 ? '' : 'encendido'?>">
                         CALEFAC.
                         <img id="temperatura" src="./media/temperatura.png" alt="">
                     </div>
@@ -110,6 +110,7 @@ $todos = $stmt->fetchAll();
     <script>
         document.getElementById("myCalefaccion").addEventListener("click", function () {
             this.classList.toggle("encendido");
+			mostrarAlerta();
         });
     </script>
 
@@ -141,18 +142,18 @@ $todos = $stmt->fetchAll();
             '¡Las calefacciones del centro se han encendido!',
             '¡Las calefacciones del centro se han apagado!',
         ];
-        let indice = <?php echo $todos[5] == 0 ? 0 : 1; ?>;
+        let indice = <?php echo $todos[5]['estado'] == 0 ? 0 : 1; ?>;
 
         function mostrarAlerta() {
 			let action;
 			let dispositivoID = 6; // Ajusta según sea necesario
-			if (indice == 0) {
+			if (indice % 2 == 0) {
 				action = 'turnOn';
 			} else {
 				action = 'turnOff';
 			}
-            alert(mensajes[indice]);
-            indice = (indice + 1) % mensajes.length; // Cambia el índice para el siguiente mensaje
+            alert(mensajes[indice % 2]);
+            indice++;
 			actualizarLogs(action, dispositivoID);
         }
     </script>
