@@ -76,11 +76,21 @@ $todos = $stmt->fetchAll();
               LUCES
               <img id="bombilla" src="./media/bombilla.png" alt="" />
             </div>
+            <div id="myRouter" class="fondoBoton <?php echo $todos[2]['estado'] == 0 ? '' : 'encendido'; ?>">
+              ROUTER
+              <img id="router" src="./media/router.png" alt="">
+            </div>
+            <div id="myCalefaccion" class="fondoBoton" onclick="mostrarAlerta()">
+              CALEFAC.
+              <img class="temperatura" src="./media/temperatura.png" alt="">
+            </div>
             <div class="fondoBoton">LUCES</div>
             <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
+            <div id="myCambio" onclick="window.location.href='plano2.php'" class="fondoCambio" >
+                        CAMBIAR <br>
+                        PISO
+                        <img id="cambio" src="./media/cambio.png" alt="">
+                    </div>
             <div class="fondoBoton">LUCES</div>
             <div id="myLogs" class="fondoBoton">LOGS</div>
             <div class="fondoBoton">LUCES</div>
@@ -109,21 +119,46 @@ $todos = $stmt->fetchAll();
       this.classList.toggle("changed");
 
       // Alternar la acción según el estado del bombilla
-      let action = this.classList.contains('changed') ? 'turnOn' : 'turnOff';
+      let action = this.classList.contains('changed');
 
       // Actualizar la visibilidad de las imágenes
       planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
       planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
-
-      actualizarLogs(action);
+      let dispositivoID = 1;
+      actualizarLogs(action, dispositivoID);
     });
 
-    function actualizarLogs(action) {
+    //Funcion click calefaccion
+
+    let mensajes = [
+            '¡Las calefacciones del centro se han encendido!',
+            '¡Las calefacciones del centro se han apagado!',
+        ];
+        let indice = 0;
+
+        function mostrarAlerta() {
+            alert(mensajes[indice]);
+            indice = (indice + 1) % mensajes.length; // Cambia el índice para el siguiente mensaje
+        }
+
+
+    //Funcion click router
+
+    document.getElementById('myRouter').addEventListener('click', function() {
+      this.classList.toggle("encendido");
+      
+     
+      let action = this.classList.contains('encendido');
+      let dispositivoID = 3; // Ajusta según sea necesario
+      actualizarLogs(action, dispositivoID);
+    });
+
+    function actualizarLogs(action,dispositivoID) {
       // Enviar datos al servidor
       console.log("Enviando datos al servidor...");
       let miDato = new URLSearchParams();
       miDato.append("valor", action);
-      miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+      miDato.append("dispositivoID", dispositivoID); // Ajusta según sea necesario
       miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
 
       fetch('procesar.php', {
@@ -245,28 +280,28 @@ $todos = $stmt->fetchAll();
     }
     // Fin del código de la alarma
 
-	// Inicio descargar logs
+    // Inicio descargar logs
 
-	document.getElementById("myLogs").addEventListener("click", function() {
-		downloadLogs();
-	});
+    document.getElementById("myLogs").addEventListener("click", function() {
+      downloadLogs();
+    });
 
-	function downloadLogs() {
-		fetch('log_download.php')
+    function downloadLogs() {
+      fetch('log_download.php')
         .then(response => response.blob())
         .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'logs.txt';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'logs.txt';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
         })
         .catch(error => console.error('Error al descargar los logs:', error));
-	}
-	// Fin descargar logs
+    }
+    // Fin descargar logs
 
 
     Window.onload = repoblar();
