@@ -41,12 +41,14 @@ $todos = $stmt->fetchAll();
     <main>
         <div class="container">
         <section id="section1">
-                <img id="planoOff <?php echo $todos[0]['estado'] == 0 ? "planoOff" : "planoOn" ?>" 
+                <img 
+                id="<?php echo $todos[0]['estado'] == 0 ? "planoOff" : "planoOn" ?>" 
                 class="plano" 
                 src="./media/Plano2_Off.jpg" 
                 alt="">
 
-                <img id="planoOn <?php echo $todos[0]['estado'] == 0 ? "planoOn" : "planoOff" ?>" 
+                <img 
+                id="<?php echo $todos[0]['estado'] == 0 ? "planoOn" : "planoOff" ?>" 
                 class="plano" 
                 src="./media/Plano2_On.jpg" 
                 alt="">
@@ -168,7 +170,7 @@ $todos = $stmt->fetchAll();
       console.log("Enviando datos al servidor...");
       let miDato = new URLSearchParams();
       miDato.append("valor", action);
-      miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+      miDato.append("dispositivoID", 2); // Ajusta según sea necesario
       miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
 
       fetch('procesar.php', {
