@@ -19,7 +19,11 @@ $stmt = $con->prepare($query_dispositivo);
 $stmt->execute();
 $dispositivo = $stmt->fetchAll();
 foreach ($logs as $log) {
+	if ($dispositivo[$log['dispositivoID'] - 1]['tipo'] != "Alarma") {
 	$texto = "[" . $log['fecha'] . "] - " . $nombre[$log['usuarioID'] - 1]['nombre'] . " ID: (" . $log['usuarioID'] . ") - " . $log['accion'] . " " . $dispositivo[$log['dispositivoID'] - 1]['tipo'] . " piso " . $dispositivo[$log['dispositivoID'] - 1]['piso'];
+	}else{
+		$texto = "[" . $log['fecha'] . "] - " . $nombre[$log['usuarioID'] - 1]['nombre'] . " ID: (" . $log['usuarioID'] . ") - " . $log['accion'] . " " . $dispositivo[$log['dispositivoID'] - 1]['tipo'];
+	}
 	fputcsv($fp, array($texto));
 }
 fclose($fp);

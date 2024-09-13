@@ -107,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	</head>
 	<body>
 		<h1>Erronka 0 - Index</h1>
-
+	
 	<div class="w3-button w3-white w3-ripple" onclick="window.location.href='plano1.php'">
   			<img src="./media/planoD.png" alt="Alps">
   		<div class="w3-container w3-center">

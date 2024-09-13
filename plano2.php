@@ -4,6 +4,12 @@ include "dbcreate.php";
 session_start();
 require_once 'dbcreate.php';
 
+if (!isset($_SESSION['userID'])) {
+  header('Location: login.php');
+  exit;
+}
+require_once 'dbcreate.php';
+
 $con = getConnection();
 
 // Seleccionar todos los dispositivos
@@ -11,11 +17,7 @@ $sql = "SELECT * FROM dispositivo";
 $stmt = $con->prepare($sql);
 $stmt->execute();
 $todos = $stmt->fetchAll();
-// Seleccionar las últimas 10 acciones
-$sql = "SELECT * FROM acciones ORDER BY actionID DESC LIMIT 10";
-$stmt = $con->prepare($sql);
-$stmt->execute();
-$log = $stmt->fetchAll();
+
 
 ?>
 
@@ -39,9 +41,17 @@ $log = $stmt->fetchAll();
     <main>
         <div class="container">
         <section id="section1">
-                <img id="planoOff" class="plano" src="./media/Plano2_Off.jpg" alt="">
+                <img 
+                id="<?php echo $todos[0]['estado'] == 0 ? "planoOff" : "planoOn" ?>" 
+                class="plano" 
+                src="./media/Plano2_Off.jpg" 
+                alt="">
 
-                <img id="planoOn" class="plano" src="./media/Plano2_On.jpg" alt="">
+                <img 
+                id="<?php echo $todos[0]['estado'] == 0 ? "planoOn" : "planoOff" ?>" 
+                class="plano" 
+                src="./media/Plano2_On.jpg" 
+                alt="">
                 
         <div class="logTitle">
           Historial de Logs
@@ -57,7 +67,7 @@ $log = $stmt->fetchAll();
                     <h1>Panel de control</h1>
                 </div>
                 <div class="botones">
-                    <div id="myBombilla" class="fondoBoton">
+                    <div id="myBombilla" class="fondoBoton <?php echo $todos[1]['estado'] == 0 ? '' : 'changed'; ?>">
                         LUCES
                         <img id="bombilla" src="./media/bombilla.png" alt="">
                     </div>
@@ -65,9 +75,9 @@ $log = $stmt->fetchAll();
                         ALARMA
                         <div id="estadoAlarma" class="apagada">Apagada</div>
                     </div>
-                    <div id="myRouter" class="fondoBoton1">
+                    <div id="myRouter" class="fondoBoton1 <?php echo $todos[3]['estado'] == 0 ? '' : 'encendido'?>">
                         ROUTER
-                        <img id="router" src="./media/router.png" alt="">
+                        <img id="router" src="./media/router.png" alt="" style="display: <?php echo $todos[3]['estado'] == 0 ? 'none' : 'block'?>;">
                     </div>
                     <div id="myCalefaccion" class="fondoBoton1" onclick="mostrarAlerta()">
                         CALEFAC.
@@ -107,11 +117,16 @@ $log = $stmt->fetchAll();
     <script>
         document.getElementById('myRouter').addEventListener('click', function () {
             var image = document.getElementById('router');
+			let action;
             if (image.style.display === 'block') {
+				let action = 'turnOn';
                 image.style.display = 'none';
             } else {
+				let action = 'turnOff';
                 image.style.display = 'block';
             }
+			let dispositivoID = 4; // Ajusta según sea necesario
+			actualizarLogs(action, dispositivoID);
         });
     </script>
 
@@ -141,26 +156,32 @@ $log = $stmt->fetchAll();
     let miDato;
     const logDiv = document.querySelector(".logText");
 
+	// Cambiar estado bombilla
     document.getElementById("myBombilla").addEventListener("click", function() {
       // Cambiar el estado del botón de luz
       this.classList.toggle("changed");
 
       // Alternar la acción según el estado del bombilla
       let action = this.classList.contains('changed') ? 'turnOn' : 'turnOff';
+	  let dispositivoID = 2; // Ajusta según sea necesario
 
       // Actualizar la visibilidad de las imágenes
       planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
       planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
-      actualizarLogs(action);
+		
+      actualizarLogs(action, dispositivoID);
     });
 
-    function actualizarLogs(action) {
+	// Cambiar estado router
+
+
+    function actualizarLogs(action, dispositivoID) {
       // Enviar datos al servidor
       console.log("Enviando datos al servidor...");
       let miDato = new URLSearchParams();
       miDato.append("valor", action);
-      miDato.append("dispositivoID", 1); // Ajusta según sea necesario
+      miDato.append("dispositivoID", dispositivoID); // Ajusta según sea necesario
       miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
 
       fetch('procesar.php', {
