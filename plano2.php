@@ -67,7 +67,7 @@ $todos = $stmt->fetchAll();
                     <h1>Panel de control</h1>
                 </div>
                 <div class="botones">
-                    <div id="myBombilla" class="fondoBoton <?php echo $todos[0]['estado'] == 0 ? '' : 'changed'; ?>">
+                    <div id="myBombilla" class="fondoBoton <?php echo $todos[1]['estado'] == 0 ? '' : 'changed'; ?>">
                         LUCES
                         <img id="bombilla" src="./media/bombilla.png" alt="">
                     </div>
@@ -75,9 +75,9 @@ $todos = $stmt->fetchAll();
                         ALARMA
                         <div id="estadoAlarma" class="apagada">Apagada</div>
                     </div>
-                    <div id="myRouter" class="fondoBoton1">
+                    <div id="myRouter" class="fondoBoton1 <?php echo $todos[3]['estado'] == 0 ? '' : 'encendido'?>">
                         ROUTER
-                        <img id="router" src="./media/router.png" alt="">
+                        <img id="router" src="./media/router.png" alt="" style="display: <?php echo $todos[3]['estado'] == 0 ? 'none' : 'block'?>;">
                     </div>
                     <div id="myCalefaccion" class="fondoBoton1" onclick="mostrarAlerta()">
                         CALEFAC.
@@ -117,11 +117,16 @@ $todos = $stmt->fetchAll();
     <script>
         document.getElementById('myRouter').addEventListener('click', function () {
             var image = document.getElementById('router');
+			let action;
             if (image.style.display === 'block') {
+				let action = 'turnOn';
                 image.style.display = 'none';
             } else {
+				let action = 'turnOff';
                 image.style.display = 'block';
             }
+			let dispositivoID = 4; // Ajusta según sea necesario
+			actualizarLogs(action, dispositivoID);
         });
     </script>
 
@@ -151,26 +156,32 @@ $todos = $stmt->fetchAll();
     let miDato;
     const logDiv = document.querySelector(".logText");
 
+	// Cambiar estado bombilla
     document.getElementById("myBombilla").addEventListener("click", function() {
       // Cambiar el estado del botón de luz
       this.classList.toggle("changed");
 
       // Alternar la acción según el estado del bombilla
       let action = this.classList.contains('changed') ? 'turnOn' : 'turnOff';
+	  let dispositivoID = 2; // Ajusta según sea necesario
 
       // Actualizar la visibilidad de las imágenes
       planoOn.style.display = planoOn.style.display === "block" ? "none" : "block";
       planoOff.style.display = planoOff.style.display === "none" ? "block" : "none";
 
-      actualizarLogs(action);
+		
+      actualizarLogs(action, dispositivoID);
     });
 
-    function actualizarLogs(action) {
+	// Cambiar estado router
+
+
+    function actualizarLogs(action, dispositivoID) {
       // Enviar datos al servidor
       console.log("Enviando datos al servidor...");
       let miDato = new URLSearchParams();
       miDato.append("valor", action);
-      miDato.append("dispositivoID", 2); // Ajusta según sea necesario
+      miDato.append("dispositivoID", dispositivoID); // Ajusta según sea necesario
       miDato.append("uid", <?php echo json_encode($_SESSION['userID']); ?>);
 
       fetch('procesar.php', {
