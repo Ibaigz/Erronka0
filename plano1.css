@@ -183,8 +183,8 @@ p {
 
 
 /* ROUTER */
-.myRouter, img{
-    display: BLOCK;
+#router{
+    display: none;
     width: 40px;
 }
 
@@ -202,7 +202,10 @@ p {
 
 
 /* BOTON CAMBIO */
+#cambio {
+    width: 30px;
 
+}
 .fondoCambio {
     background-color: green;
     box-shadow:

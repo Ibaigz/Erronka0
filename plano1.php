@@ -76,9 +76,9 @@ $todos = $stmt->fetchAll();
               LUCES
               <img id="bombilla" src="./media/bombilla.png" alt="" />
             </div>
-            <div id="myRouter" class="fondoBoton <?php echo $todos[2]['estado'] == 0 ? '' : 'encendido'; ?>">
+            <div id="myRouter" class="fondoBoton <?php echo $todos[2]['estado'] == 0 ? '' : 'encendido' ?>">
               ROUTER
-              <img id="router" src="./media/router.png" alt="">
+              <img id="router" src="./media/router.png" alt="" style="display: <?php echo $todos[2]['estado'] == 0 ? 'none' : 'block' ?>;">
             </div>
             <div id="myCalefaccion" class="fondoBoton" onclick="mostrarAlerta()">
               CALEFAC.
@@ -86,11 +86,11 @@ $todos = $stmt->fetchAll();
             </div>
             <div class="fondoBoton">LUCES</div>
             <div class="fondoBoton">LUCES</div>
-            <div id="myCambio" onclick="window.location.href='plano2.php'" class="fondoCambio" >
-                        CAMBIAR <br>
-                        PISO
-                        <img id="cambio" src="./media/cambio.png" alt="">
-                    </div>
+            <div id="myCambio" onclick="window.location.href='plano2.php'" class="fondoCambio">
+              CAMBIAR <br>
+              PISO
+              <img id="cambio" src="./media/cambio.png" alt="">
+            </div>
             <div class="fondoBoton">LUCES</div>
             <div id="myLogs" class="fondoBoton">LOGS</div>
             <div class="fondoBoton">LUCES</div>
@@ -131,29 +131,36 @@ $todos = $stmt->fetchAll();
     //Funcion click calefaccion
 
     let mensajes = [
-            '¡Las calefacciones del centro se han encendido!',
-            '¡Las calefacciones del centro se han apagado!',
-        ];
-        let indice = 0;
+      '¡Las calefacciones del centro se han encendido!',
+      '¡Las calefacciones del centro se han apagado!',
+    ];
+    let indice = 0;
 
-        function mostrarAlerta() {
-            alert(mensajes[indice]);
-            indice = (indice + 1) % mensajes.length; // Cambia el índice para el siguiente mensaje
-        }
+    function mostrarAlerta() {
+      alert(mensajes[indice]);
+      indice = (indice + 1) % mensajes.length; // Cambia el índice para el siguiente mensaje
+    }
 
 
     //Funcion click router
 
-    document.getElementById('myRouter').addEventListener('click', function() {
-      this.classList.toggle("encendido");
-      
-     
-      let action = this.classList.contains('encendido');
-      let dispositivoID = 3; // Ajusta según sea necesario
-      actualizarLogs(action, dispositivoID);
-    });
+    document.getElementById('myRouter').addEventListener('click', function () {
+            var image = document.getElementById('router');
+			let action;
+            if (image.style.display === 'block') {
+				let action = 'turnOn';
+                image.style.display = 'none';
+            } else {
+				let action = 'turnOff';
+                image.style.display = 'block';
+            }
+            this.classList.toggle("encendido");
 
-    function actualizarLogs(action,dispositivoID) {
+			let dispositivoID = 3; // Ajusta según sea necesario
+			actualizarLogs(action, dispositivoID);
+        });
+
+    function actualizarLogs(action, dispositivoID) {
       // Enviar datos al servidor
       console.log("Enviando datos al servidor...");
       let miDato = new URLSearchParams();
