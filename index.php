@@ -107,19 +107,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	</head>
 	<body>
 		<h1>Erronka 0 - Index</h1>
+
+	<div class="w3-half">
+		<div class="w3-button w3-white w3-ripple"  onclick="window.location.href='plano1.php'">
+  				<img src="./media/planoD.png" alt="Alps">
+  			<div class="w3-container w3-center">
+    			<p>Acceder al Plano 1</p>
+  			</div>
+		</div>
+	</div>
+	<div class="w3-half">
+		<div class="w3-button w3-white w3-ripple" onclick="window.location.href='plano2.php'">
+  				<img src="./media/planoD.png" alt="Alps">
+  			<div class="w3-container w3-center">
+    			<p>Acceder al Plano 2</p>
+  			</div>
+		</div>
+	</div>
 	
-	<div class="w3-button w3-white w3-ripple" onclick="window.location.href='plano1.php'">
-  			<img src="./media/planoD.png" alt="Alps">
-  		<div class="w3-container w3-center">
-    		<p>Acceder al Plano 1</p>
-  		</div>
-	</div>
-	<div class="w3-button w3-white w3-ripple" onclick="window.location.href='plano2.php'">
-  			<img src="./media/planoD.png" alt="Alps">
-  		<div class="w3-container w3-center">
-    		<p>Acceder al Plano 2</p>
-  		</div>
-	</div>
 	<footer class="footer">
         <div class="footer-section">
             <h4>Descargar Logs:</h4>

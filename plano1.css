@@ -180,3 +180,43 @@ p {
     width: 90%;
     padding: 15px;
 }
+
+
+/* ROUTER */
+#router{
+    display: none;
+    width: 40px;
+}
+
+.encendido {
+    background-color: lightgreen;
+}
+
+
+/* CALEFACCION */
+
+.temperatura {
+    width: 30px;
+
+}
+
+
+/* BOTON CAMBIO */
+#cambio {
+    width: 30px;
+
+}
+.fondoCambio {
+    background-color: green;
+    box-shadow:
+        -5px -5px 5px rgba(255, 255, 255, 0.1),
+        5px 5px 5px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30%;
+    padding: 4%;
+    border-radius: 7px;
+    margin: 0 auto;
+}
