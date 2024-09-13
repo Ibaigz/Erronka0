@@ -4,6 +4,12 @@ include "dbcreate.php";
 session_start();
 require_once 'dbcreate.php';
 
+if (!isset($_SESSION['userID'])) {
+  header('Location: login.php');
+  exit;
+}
+require_once 'dbcreate.php';
+
 $con = getConnection();
 
 // Seleccionar todos los dispositivos
@@ -11,11 +17,7 @@ $sql = "SELECT * FROM dispositivo";
 $stmt = $con->prepare($sql);
 $stmt->execute();
 $todos = $stmt->fetchAll();
-// Seleccionar las últimas 10 acciones
-$sql = "SELECT * FROM acciones ORDER BY actionID DESC LIMIT 10";
-$stmt = $con->prepare($sql);
-$stmt->execute();
-$log = $stmt->fetchAll();
+
 
 ?>
 
@@ -39,9 +41,15 @@ $log = $stmt->fetchAll();
     <main>
         <div class="container">
         <section id="section1">
-                <img id="planoOff" class="plano" src="./media/Plano2_Off.jpg" alt="">
+                <img id="planoOff <?php echo $todos[0]['estado'] == 0 ? "planoOff" : "planoOn" ?>" 
+                class="plano" 
+                src="./media/Plano2_Off.jpg" 
+                alt="">
 
-                <img id="planoOn" class="plano" src="./media/Plano2_On.jpg" alt="">
+                <img id="planoOn <?php echo $todos[0]['estado'] == 0 ? "planoOn" : "planoOff" ?>" 
+                class="plano" 
+                src="./media/Plano2_On.jpg" 
+                alt="">
                 
         <div class="logTitle">
           Historial de Logs
@@ -57,7 +65,7 @@ $log = $stmt->fetchAll();
                     <h1>Panel de control</h1>
                 </div>
                 <div class="botones">
-                    <div id="myBombilla" class="fondoBoton">
+                    <div id="myBombilla" class="fondoBoton <?php echo $todos[0]['estado'] == 0 ? '' : 'changed'; ?>">
                         LUCES
                         <img id="bombilla" src="./media/bombilla.png" alt="">
                     </div>
