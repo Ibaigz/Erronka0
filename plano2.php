@@ -88,14 +88,8 @@ $todos = $stmt->fetchAll();
                         PISO
                         <img id="cambio" src="./media/cambio.png" alt="">
                     </div>
-                    <div class="fondoBoton">
-                        LUCES
-                    </div>
-                    <div class="fondoBoton">
-                        LUCES
-                    </div>
-                    <div class="fondoBoton">
-                        LUCES
+                    <div id="myLogs" class="fondoBoton">
+                        LOGS
                     </div>
                 </div>
             </section>
@@ -227,6 +221,30 @@ $todos = $stmt->fetchAll();
           console.error('Error al obtener los logs:', error);
         });
     }
+
+	// Descargar logs
+	    // Inicio descargar logs
+
+	document.getElementById("myLogs").addEventListener("click", function() {
+    	downloadLogs();
+    });
+
+    function downloadLogs() {
+      fetch('log_download.php')
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'logs.txt';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error al descargar los logs:', error));
+    }
+    // Fin descargar logs
 
     // JavaScript para controlar la alarma
     let alarma = document.getElementById("alarmBlock");
