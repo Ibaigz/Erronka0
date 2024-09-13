@@ -25,7 +25,12 @@ foreach ($log as $key => $logs) {
     $stmt2->bindParam(':dispositivoID', $logs['dispositivoID']);
     $stmt2->execute();
     $dispositivo = $stmt2->fetch();
-    $log[$key]['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+	if ($dispositivo['tipo'] != "Alarma"){
+    	$log[$key]['dispositivoID'] = $dispositivo['tipo'] . " piso " . $dispositivo['piso'];
+	}
+	else{
+		$log[$key]['dispositivoID'] = $dispositivo['tipo'];
+	}
 }
 
 header('Content-Type: application/json');
