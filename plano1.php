@@ -76,6 +76,7 @@ $todos = $stmt->fetchAll();
               LUCES
               <img id="bombilla" src="./media/bombilla.png" alt="" />
             </div>
+			<div onclick="textoEscrito()" id="myAlarma" class="fondoBoton">ALARMA</div>
             <div id="myRouter" class="fondoBoton1 <?php echo $todos[2]['estado'] == 0 ? '' : 'encendido' ?>">
               ROUTER
               <img id="router" src="./media/router.png" alt="" style="display: <?php echo $todos[2]['estado'] == 0 ? 'none' : 'block' ?>;">
@@ -84,17 +85,12 @@ $todos = $stmt->fetchAll();
               CALEFAC.
               <img id="temperatura" src="./media/temperatura.png" alt="">
             </div>
-            <div class="fondoBoton">LUCES</div>
-            <div class="fondoBoton">LUCES</div>
             <div id="myCambio" onclick="window.location.href='plano2.php'" class="fondoCambio">
               CAMBIAR <br>
               PISO
               <img id="cambio" src="./media/cambio.png" alt="">
             </div>
-            <div class="fondoBoton">LUCES</div>
             <div id="myLogs" class="fondoBoton">LOGS</div>
-            <div class="fondoBoton">LUCES</div>
-            <div onclick="textoEscrito()" id="myAlarma" class="fondoBoton">ALARMA</div>
           </div>
         </form>
       </section>

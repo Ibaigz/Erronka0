@@ -64,7 +64,7 @@ $todos = $stmt->fetchAll();
 
             <section id="s2">
                 <div class="fondoP">
-                    <h1>Panel de control</h1>
+                    <h1>PANEL DE CONTROL</h1>
                 </div>
                 <div class="botones">
                     <div id="myBombilla" class="fondoBoton <?php echo $todos[1]['estado'] == 0 ? '' : 'changed'; ?>">
